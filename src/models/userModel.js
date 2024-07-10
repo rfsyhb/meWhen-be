@@ -11,13 +11,13 @@ class User {
   constructor() {
     this.users = [
       {
-        id: 'static-id-1',
+        id: 'static-user-id-1',
         name: 'Rafi Syihab',
         username: 'rafi123',
         password: bcrypt.hashSync('password123', 10),
       },
       {
-        id: 'static-id-2',
+        id: 'static-user-id-2',
         name: 'John Doe',
         username: 'john123',
         password: bcrypt.hashSync('password123', 10),
