@@ -44,8 +44,9 @@ exports.getUsers = (request, h) => {
     .type('application/json');
 };
 
-exports.getUserById = (request, h) => {
-  const user = userService.getUserById(request.params.id);
+exports.getOwnProfile = (request, h) => {
+  const { id: ownerId } = request.auth.credentials;
+  const user = userService.getOwnProfile(ownerId);
   if (user) {
     return h
       .response({ status: 'success', message: 'ok', data: { user } })

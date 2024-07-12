@@ -51,7 +51,7 @@ class User {
   async login(data) {
     const { username, password } = data; // Destructuring data
 
-    const user = this.users.find((user) => user.username === username);
+    const user = this.users.find((userData) => userData.username === username);
     if (!user) {
       return null;
     }
@@ -69,8 +69,8 @@ class User {
     return this.users.map(({ password, ...user }) => user); // Return all users without password
   }
 
-  getUserById(id) {
-    const user = this.users.find((user) => user.id === id);
+  getOwnProfile(id) {
+    const user = this.users.find((userData) => userData.id === id);
     if (user) {
       const { password, ...filteredData } = user;
       return filteredData; // Return user data without password

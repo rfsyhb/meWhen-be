@@ -9,8 +9,8 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/users/{id}',
-    handler: userController.getUserById,
+    path: '/users/me',
+    handler: userController.getOwnProfile,
     options: {
       pre: [{ method: verifyToken }],
     },
