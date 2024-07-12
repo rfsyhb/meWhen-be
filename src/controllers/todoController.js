@@ -20,7 +20,7 @@ exports.createTodo = (request, h) => {
 };
 
 exports.updateTodo = (request, h) => {
-  const { id } = request.params.id;
+  const { id } = request.params;
   const data = request.payload;
   const updatedTodo = todoService.updateTodo(id, data);
   if (updatedTodo) {
@@ -40,7 +40,7 @@ exports.updateTodo = (request, h) => {
 };
 
 exports.deleteTodo = (request, h) => {
-  const { id } = request.params.id;
+  const { id } = request.params;
   const deletedTodo = todoService.deleteTodo(id);
   if (deletedTodo) {
     return h
