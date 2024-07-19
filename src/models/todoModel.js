@@ -4,64 +4,73 @@
  * method : getAllByOwner, create, update, delete
  */
 const { nanoid } = require('nanoid');
+const supabase = require('../utils/supabaseClient');
 
 class Todo {
-  constructor() {
-    this.todos = [
-      {
-        id: 'static-id-1',
-        ownerId: 'static-user-id-1',
-        title: 'Learn Node.js',
-        completed: false,
-      },
-      {
-        id: 'static-id-2',
-        ownerId: 'static-user-id-2',
-        title: 'Learn Hapi.js',
-        completed: true,
-      },
-      {
-        id: 'static-id-3',
-        ownerId: 'static-user-id-2',
-        title: 'Learn Express.js',
-        completed: true,
-      },
-    ];
+  static async getAllByOwner(ownerId) {
+    const { data: todos, error } = await supabase
+      .from('todos')
+      .select('*')
+      .eq('owner_id', ownerId);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return todos; // retrieve all todos by ownerId
   }
 
-  getAllByOwner(ownerId) {
-    return this.todos.filter((todo) => todo.ownerId === ownerId); // retrieve all todos by ownerId
-  }
-
-  create(data) {
+  static async create(data) {
     const { title, ownerId } = data;
     const id = nanoid(16);
     const completed = false;
 
-    const newTodo = { id, ownerId, title, completed };
-    this.todos.push(newTodo);
+    const { data: newTodo, error } = await supabase
+      .from('todos')
+      .insert([{ id, owner_id: ownerId, title, completed }])
+      .single()
+      .select();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
     return newTodo;
   }
 
-  update(id, data) {
-    const index = this.todos.findIndex((todo) => todo.id === id);
+  static async update(id, data) {
+    const { data: updatedTodo, error } = await supabase
+      .from('todos')
+      .update(data)
+      .eq('id', id)
+      .single()
+      .select();
 
-    if (index === -1) {
-      return null;
+    if (error) {
+      throw new Error(error.message);
     }
 
-    this.todos[index] = { ...this.todos[index], ...data };
-    return this.todos[index];
+    if (!updatedTodo) {
+      return null; // No rows were updated, meaning the todo with the given id does not exist
+    }
+
+    return updatedTodo;
   }
 
-  delete(id) {
-    const index = this.todos.findIndex((todo) => todo.id === id);
+  static async delete(id) {
+    const { data: deletedTodo, error } = await supabase
+      .from('todos')
+      .delete()
+      .eq('id', id)
+      .single()
+      .select();
 
-    if (index !== -1) {
-      return this.todos.splice(index, 1)[0];
+    if (error) {
+      throw new Error(error.message);
     }
-    return null;
+
+    return deletedTodo;
   }
 }
 
-module.exports = new Todo();
+module.exports = Todo;
